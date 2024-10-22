@@ -5,6 +5,7 @@ const { version } = require("./package.json")
 
 yargs.usage("Parsek CLI")
 yargs.version(version)
+yargs.epilogue("For more information, find the manual at https://parsek.dev")
 
 yargs.command({
   command: "configure <key> [value]",
@@ -23,7 +24,7 @@ yargs
   .command({
     command: "*",
     handler() {
-      yargs.showHelp()
+      yargs.showHelp("log")
     }
   })
   .demandCommand()
