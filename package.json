@@ -3,7 +3,11 @@
   "module": "index.js",
   "type": "module",
   "scripts": {
-    "build": "bun build --compile ./index.js --outfile build/parsek-cli"
+    "build:windows-x64": "bun build --compile --target=bun-windows-x64 ./index.js --outfile build/parsek-cli",
+    "build:linux-x64": "bun build --compile --target=bun-linux-x64 ./index.js --outfile build/parsek-cli",
+    "build:linux-arm64": "bun build --compile --target=bun-linux-arm64 ./index.js --outfile build/parsek-cli",
+    "build:macos-x64": "bun build --compile --target=bun-darwin-x64 ./index.js --outfile build/parsek-cli",
+    "build:macos-arm64": "bun build --compile --target=bun-darwin-arm64 ./index.js --outfile build/parsek-cli"
   },
   "dependencies": {
     "yargs": "^17.7.2"
