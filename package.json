@@ -1,0 +1,11 @@
+{
+  "name": "cli",
+  "module": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "bun build --compile ./index.js --outfile build/parsek-cli"
+  },
+  "dependencies": {
+    "yargs": "^17.7.2"
+  }
+}
