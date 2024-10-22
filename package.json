@@ -1,15 +1,24 @@
 {
   "name": "cli",
   "module": "index.js",
+  "version": "0.0.1-alpha",
   "type": "module",
   "scripts": {
-    "build:windows-x64": "bun build --compile --target=bun-windows-x64 ./index.js --outfile build/parsek-cli",
-    "build:linux-x64": "bun build --compile --target=bun-linux-x64 ./index.js --outfile build/parsek-cli",
-    "build:linux-arm64": "bun build --compile --target=bun-linux-arm64 ./index.js --outfile build/parsek-cli",
-    "build:macos-x64": "bun build --compile --target=bun-darwin-x64 ./index.js --outfile build/parsek-cli",
-    "build:macos-arm64": "bun build --compile --target=bun-darwin-arm64 ./index.js --outfile build/parsek-cli"
+    "build:windows-x64": "bun build --minify --compile --target=bun-windows-x64 ./index.ts --outfile build/parsek-cli",
+    "build:linux-x64": "bun build --minify --compile --target=bun-linux-x64 ./index.ts --outfile build/parsek-cli",
+    "build:linux-arm64": "bun build --minify --compile --target=bun-linux-arm64 ./index.ts --outfile build/parsek-cli",
+    "build:macos-x64": "bun build --minify --compile --target=bun-darwin-x64 ./index.ts --outfile build/parsek-cli",
+    "build:macos-arm64": "bun build --minify --compile --target=bun-darwin-arm64 ./index.ts --outfile build/parsek-cli",
+    "format": "prettier --write --list-different ."
   },
   "dependencies": {
     "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
   }
 }
