@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import Yargs from "yargs/yargs"
-const { version } = require("./package.json")
 
 const yargs = Yargs(Bun.argv.slice(2))
+const version = Bun.env.VERSION as string
 
 yargs.scriptName("parsek")
 yargs.usage("Parsek CLI")
