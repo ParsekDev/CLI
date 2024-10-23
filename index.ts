@@ -1,20 +1,49 @@
 #!/usr/bin/env node
 
-const yargs = require("yargs")
+import Yargs from "yargs/yargs"
 const { version } = require("./package.json")
 
+const yargs = Yargs(Bun.argv.slice(2))
+
+yargs.scriptName("parsek")
 yargs.usage("Parsek CLI")
 yargs.version(version)
 yargs.epilogue("For more information, find the manual at https://parsek.dev")
 
 yargs.command({
-  command: "configure <key> [value]",
-  aliases: ["config", "cfg"],
-  desc: "Set a config variable",
-  builder: (yargs) => yargs.default("value", "true"),
-  handler: (argv) => {
-    console.log(`setting ${argv.key} to ${argv.value}`)
-  }
+  command: "create",
+  aliases: ["init"],
+  describe: "Create parsek project",
+  builder: (yargs) => {
+    return yargs
+  },
+  handler: (argv) => {}
+})
+
+// Plugin commands
+yargs.command({
+  command: "plugin create",
+  describe: "Create a new parsek plugin",
+  builder: (yargs) => {
+    return yargs
+  },
+  handler: (argv) => {}
+})
+yargs.command({
+  command: "plugin add",
+  describe: "Add a plugin to the project",
+  builder: (yargs) => {
+    return yargs
+  },
+  handler: (argv) => {}
+})
+yargs.command({
+  command: "plugin remove",
+  describe: "Remove a plugin from the project",
+  builder: (yargs) => {
+    return yargs
+  },
+  handler: (argv) => {}
 })
 
 yargs
