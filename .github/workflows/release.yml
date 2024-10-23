@@ -1,0 +1,77 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Parsek CLI Release
+
+on:
+  push:
+    branches: [ "dev", "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  get-next-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for npm provenance
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+
+      - name: Dry run to get next release version
+        id: get-next-version
+        run: |
+          export NEXT_TAG_VERSION=$(npx semantic-release --dry-run | grep 'next release version is ' | awk -F"next release version is " '{print $2}')
+          echo "new_tag_version=${NEXT_TAG_VERSION}" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+
+      - name: Echo new_tag_version
+        run: |
+          echo "Extracted Tag Version: ${{ steps.get-next-version.outputs.new_tag_version }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+    outputs:
+      new_tag_version: ${{ steps.get-next-version.outputs.new_tag_version }}
+
+  build-and-release:
+    runs-on: ubuntu-latest
+    needs: get-next-version
+    if: ${{needs.get-next-version.outputs.new_tag_version != ''}}
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for npm provenance
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Artifacts
+        uses: oven-sh/setup-bun@v2
+
+      - run: bun build --minify --compile --target=bun-windows-x64 ./index.ts --outfile build/parsek-cli-win-x64.exe
+      - run: bun build --minify --compile --target=bun-linux-x64 ./index.ts --outfile build/parsek-cli-linux-x64
+      - run: bun build --minify --compile --target=bun-linux-arm64 ./index.ts --outfile build/parsek-cli-linux-arm64
+      - run: bun build --minify --compile --target=bun-darwin-x64 ./index.ts --outfile build/parsek-cli-darwin-x64
+      - run: bun build --minify --compile --target=bun-darwin-arm64 ./index.ts --outfile build/parsek-cli-darwin-arm64
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+        run: npx semantic-release
